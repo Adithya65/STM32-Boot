@@ -1,0 +1,23 @@
+# Build directories
+/build/
+# Object files and binaries
+*.o
+*.a
+*.elf
+*.bin
+*.hex
+# Debug and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+# CMake cache and temporary files
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+# Temporary files created by editors
+*~
+# Logs
+*.log
+
