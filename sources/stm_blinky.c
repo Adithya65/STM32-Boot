@@ -1,11 +1,34 @@
 #include <stdint.h>
 #include "stm_blinky.h"
-#include <string.h>
+#include "FreeRTOS.h"
+#include "task.h"
 
-int arr_a[10];
-int arr_b[10];
+void blinky_task();
+
+void vApplicationStackOverflowHook( TaskHandle_t xTask,
+        char * pcTaskName )
+{
+    return;
+}
 
 int main(void)
+{
+    BaseType_t ret;
+    
+    ret = xTaskCreate(blinky_task,          
+            "LED Blink",         
+            1024,                 
+            NULL,                
+            7,                   
+            NULL); 
+    configASSERT(ret == pdPASS);
+              
+    vTaskStartScheduler();       
+
+    while (1);
+}
+
+void blinky_task()
 {
     uint32_t volatile RegValue = 0;
 
@@ -46,6 +69,11 @@ int main(void)
         REG_WR( TIM6_SR , FLAG_NOT_SET );
 
     }
-
 }
+
+void HardFault_Handler(void)
+{
+    while(1); 
+}
+
 
