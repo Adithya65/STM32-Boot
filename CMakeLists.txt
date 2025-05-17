@@ -21,6 +21,7 @@ set(CMAKE_C_FLAGS "${CPU_FLAGS} -std=c11 -g -O0 -Wall -Wextra -ffunction-section
 set(SOURCES
     ${CMAKE_SOURCE_DIR}/sources/stm_blinky.c
     ${CMAKE_SOURCE_DIR}/sources/startup_stm32.c
+    ${CMAKE_SOURCE_DIR}/sources/blinky_abs.c
     ${FREERTOS_SRC}
 )
 add_executable(blinky.elf ${SOURCES})

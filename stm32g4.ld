@@ -1,7 +1,7 @@
 MEMORY
 {
     flash (rx) : ORIGIN =0x08000000, LENGTH = 32K
-    ram (rwx) : ORIGIN = 0x20000000,LENGTH = 16K
+    ram (rwx) : ORIGIN = 0x20000000,LENGTH = 64K
 }
 
 _eram = ORIGIN(ram) + LENGTH(ram);
@@ -38,7 +38,7 @@ SECTIONS
     .heap (NOLOAD) : ALIGN(8)
     {
         _heap_start = .;
-        . = . + 0x0400;  /* Reserve 1280 bytes (adjust as needed) */
+        . = . + 0x200;  /* Reserve 1280 bytes (adjust as needed) */
         _heap_end = .;
     } > ram
 
@@ -46,7 +46,7 @@ SECTIONS
     .stack (NOLOAD) : ALIGN(8)
     {
         _stack_start = .;
-        . = . + 0x0400;  /* Reserve 1280 bytes for stack (adjust as needed) */
+        . = . + 0x1200;  /* Reserve 1280 bytes for stack (adjust as needed) */
         _stack_end = .;
     } > ram
 
