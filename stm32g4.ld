@@ -34,25 +34,21 @@ SECTIONS
         . = ALIGN(4);
         _ebss = .;
     } > ram
-        /* Reserve heap space */
     .heap (NOLOAD) : ALIGN(8)
     {
         _heap_start = .;
-        . = . + 0x200;  /* Reserve 1280 bytes (adjust as needed) */
+        . = . + 0x200;  
         _heap_end = .;
     } > ram
 
-    /* Reserve stack space */
     .stack (NOLOAD) : ALIGN(8)
     {
         _stack_start = .;
-        . = . + 0x1200;  /* Reserve 1280 bytes for stack (adjust as needed) */
+        . = . + 0x1200;  
         _stack_end = .;
     } > ram
 
-    /* Optional: Reset _stack to top of stack */
     _stack = _stack_end;
-
 }
 
 
