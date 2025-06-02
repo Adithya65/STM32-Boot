@@ -1,10 +1,14 @@
 #include <stdint.h>
 #include <errno.h>
-#include "stm32_uart.h"
+#include "stm_uart.h"
+#include "stm_uart_ll.h"
 
 
 int32_t uart_init()
 {
+    set_gpio_alt_func();
+    set_rcc_configs();
+
 }
 
 
