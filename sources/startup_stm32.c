@@ -49,20 +49,20 @@ void isr_hardfault(void) {
 
 static const isr_t ivt[IVT_ARRAY_SIZE] __attribute__((used, section(".ivt"))) =
 {
-    (isr_t)&_stack,           // Initial Stack Pointer
-    isr_reset,                // Reset Handler
-    0,                        // NMI Handler (optional)
-    isr_hardfault,           // HardFault Handler
-    0,                        // Reserved
-    0,                        // Reserved
-    0,                        // Reserved
-    0,                        // Reserved
-    0,                        // Reserved
-    0,                        // Reserved
-    0,                        // Reserved
-    vPortSVCHandler,         // SVC Handler (index 11)
-    0,                        // DebugMon (optional)
-    0,                        // Reserved
-    xPortPendSVHandler,      // PendSV Handler (index 14)
-    xPortSysTickHandler      // SysTick Handler (index 15) — only if you're using SysTick
+    (isr_t)&_stack,           
+    isr_reset,                
+    0,                        
+    isr_hardfault,           
+    0,                        
+    0,                        
+    0,                        
+    0,                        
+    0,                        
+    0,                        
+    0,                        
+    vPortSVCHandler,         
+    0,                        
+    0,                        
+    xPortPendSVHandler,      
+    xPortSysTickHandler      
 };
