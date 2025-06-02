@@ -1,9 +1,7 @@
 #ifndef __STM_TIMER__
 #define __STM_TIMER__
 
-#define REG_WR(ADDRESS, VALUE)  (*(uint32_t*)(ADDRESS) = (VALUE))
-#define REG_RD(ADDRESS)         (*(uint32_t*)(ADDRESS))
-
+#include "stm_reg_access.h"
 
 #define GPIOA_BASE_ADD                  ( 0x48000000 )
 #define RCC_BASE_ADD                    ( 0X40021000 )
