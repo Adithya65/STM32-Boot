@@ -9,16 +9,17 @@ int32_t uart_init()
     set_gpio_alt_func();
     set_rcc_configs();
 
+    return 0;
 }
-
 
 int32_t uart_write_sync()
 {
+    return 0;
 }
-
 
 int32_t uart_read_sync()
 {
+    return 0;
 }
 
 

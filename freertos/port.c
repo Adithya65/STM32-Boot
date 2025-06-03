@@ -34,9 +34,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-/*Temperory fix*/
-#define __ARM_FP
-
 #ifndef __ARM_FP
     #error This port can only be used when the project options are configured to enable hardware floating point support.
 #endif

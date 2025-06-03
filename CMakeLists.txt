@@ -22,8 +22,10 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/sources/stm_blinky.c
     ${CMAKE_SOURCE_DIR}/sources/startup_stm32.c
     ${CMAKE_SOURCE_DIR}/sources/blinky_abs.c
+    ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart.c
+    ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart_ll.c
     ${FREERTOS_SRC}
 )
 add_executable(blinky.elf ${SOURCES})
-target_include_directories(blinky.elf PRIVATE ${CMAKE_SOURCE_DIR}/includes ${FREERTOS_KERNEL_DIR}/include ${FREERTOS_PORT_DIR} )
+target_include_directories(blinky.elf PRIVATE ${CMAKE_SOURCE_DIR}/includes  ${CMAKE_SOURCE_DIR}/drivers/uart  ${FREERTOS_KERNEL_DIR}/include ${FREERTOS_PORT_DIR} )
 
