@@ -28,6 +28,8 @@ int main(void)
     ret = xTaskCreate(delay_task,"delay",256,NULL,6,NULL); 
     configASSERT(ret == pdPASS);
 
+    (void)uart_loopback_test();
+
     stm_blinky_init();
 
     vTaskStartScheduler();       
