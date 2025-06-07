@@ -3,6 +3,7 @@
 #include "task.h"
 #include "semphr.h"
 #include "blinky_abs.h"
+#include "stm_uart.h"
 
 SemaphoreHandle_t xSemaphore;
 
@@ -28,7 +29,7 @@ int main(void)
     ret = xTaskCreate(delay_task,"delay",256,NULL,6,NULL); 
     configASSERT(ret == pdPASS);
 
-    (void)uart_loopback_test();
+    (void)uart_init();
 
     stm_blinky_init();
 
