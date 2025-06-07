@@ -9,8 +9,9 @@ extern unsigned int _idata;
 extern void vPortSVCHandler(void);
 extern void xPortPendSVHandler(void);
 extern void xPortSysTickHandler(void);
+extern void USART2_IRQHandler(void);
 
-#define IVT_ARRAY_SIZE (48U)
+#define IVT_ARRAY_SIZE (60U)
 typedef void (*isr_t)(void);
 
 void clear_bss()
@@ -49,20 +50,11 @@ void isr_hardfault(void) {
 
 static const isr_t ivt[IVT_ARRAY_SIZE] __attribute__((used, section(".ivt"))) =
 {
-    (isr_t)&_stack,           
-    isr_reset,                
-    0,                        
-    isr_hardfault,           
-    0,                        
-    0,                        
-    0,                        
-    0,                        
-    0,                        
-    0,                        
-    0,                        
-    vPortSVCHandler,         
-    0,                        
-    0,                        
-    xPortPendSVHandler,      
-    xPortSysTickHandler      
+    [0]  = (isr_t)&_stack,
+    [1]  = isr_reset,
+    [3]  = isr_hardfault,
+    [11] = vPortSVCHandler,
+    [14] = xPortPendSVHandler,
+    [15] = xPortSysTickHandler,
+    [54] = USART2_IRQHandler,  // IRQ 38
 };

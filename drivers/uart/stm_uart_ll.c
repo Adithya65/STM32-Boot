@@ -3,6 +3,8 @@
 #include "stm_reg_access.h"
 #include "stm_uart_ll.h"
 
+uint8_t volatile  ch = 0;
+
 void set_rcc_configs()
 {
     uint32_t volatile reg_val = 0;
@@ -35,35 +37,79 @@ void set_gpio_alt_func()
 void set_uart_configs()
 {
     uint32_t volatile reg_val = 0; ;
-    reg_val = ( 1 << 3 ) | ( 1 << 2 );
+    reg_val = ( 1 << 3 ) | ( 1 << 2 )|(1 << 5) ;
     REG_WR( USART2_BASE_ADDR + USART_CR1_OFFSET , reg_val );
     REG_WR( USART2_BASE_ADDR + USART_BRR_OFFSET , 16000000 / 115200 );
     reg_val |= 1;
     REG_WR( USART2_BASE_ADDR + USART_CR1_OFFSET , reg_val );
-
-
 }
 void start_xfer()
-{
-    uint32_t volatile reg_val = 0; ;
-    do 
-    {
-        reg_val = REG_RD( USART2_BASE_ADDR + USART_ISR_OFFSET );
-        if ( reg_val & ( 1 << 5 ) )
-        {
-            uint8_t ch = REG_RD( USART2_BASE_ADDR + USART_RDR_OFFSET );
-            do 
-            {
-                reg_val = REG_RD( USART2_BASE_ADDR + USART_ISR_OFFSET );
-            }
-            while (!( reg_val & (1 << 7)));
-            REG_WR( USART2_BASE_ADDR + USART_TDR_OFFSET , ch );
-        }
-    }
+{   
     while(1);
 }
 
 
+/*PA 2 -> EXTI2[3:0]
+ *PA 3 -> EXTI3[3:0]
+ */
+void set_uart_isr()
+{
+    uint32_t volatile reg_val = 0;
+    
+    reg_val = REG_RD( RCC_BASE_ADDR + RCC_APB2ENR_OFFSET );
+    reg_val |= 1;
+    REG_WR( RCC_BASE_ADDR + RCC_APB2ENR_OFFSET , reg_val);
+
+    reg_val = (1 << (38 - 32)); 
+    REG_WR(NVIC_ISER1, reg_val);
+}
+
+uint32_t get_reg_val()
+{
+    return REG_RD( USART2_BASE_ADDR + USART_ISR_OFFSET );
+}
+
+
+int32_t write_data()
+{
+    return 0;
+}
+
+int32_t read_data()
+{
+    return 0;
+}
+
+ 
+void USART2_IRQHandler(void)
+{
+    uint32_t volatile reg_val = get_reg_val();
+    
+    if (reg_val & (1 << 5))  
+    {
+        ch = REG_RD( USART2_BASE_ADDR + USART_RDR_OFFSET );
+    }
+    if (reg_val & (1 << 6))   
+    {
+        REG_WR(USART2_BASE_ADDR + 0x20, (1 << 6));   
+        REG_WR( USART2_BASE_ADDR + USART_TDR_OFFSET , ch );
+    }
+    if (reg_val & (1 << 4))  
+    {
+        REG_WR(USART2_BASE_ADDR + 0x20, (1 << 4));  
+    }
+    if (reg_val & (1 << 3))  
+        REG_WR(USART2_BASE_ADDR + 0x20, (1 << 3));   
+
+    if (reg_val & (1 << 2))  
+        REG_WR(USART2_BASE_ADDR + 0x20, (1 << 2));  
+
+    if (reg_val & (1 << 1))   
+        REG_WR(USART2_BASE_ADDR + 0x20, (1 << 1));   
+
+    if (reg_val & (1 << 0))  
+        REG_WR(USART2_BASE_ADDR + 0x20, (1 << 0));   
+}
 
 
 
