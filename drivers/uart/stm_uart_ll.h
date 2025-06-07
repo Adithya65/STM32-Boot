@@ -6,9 +6,8 @@
 
 /*REG BASE ADDR MACROS STARTS*/
 #define GPIO_A_REG_BASE_ADDR            0x48000000
-#define GPIO_C_REG_BASE_ADDR            0x48000800
 #define RCC_BASE_ADDR                   0x40021000
-#define USART1_BASE_ADDR                0x40013800
+#define USART2_BASE_ADDR                0x40004400
 /*REG BASE ADDR MACROS ENDS*/
 
 /*REG OFFSET MACROS OFFSET STARTS*/
@@ -17,6 +16,7 @@
 #define GPIO_AFRL_OFFSET                0x20
 #define RCC_AHB2ENR_OFFSET              0x4C
 #define RCC_APB2ENR_OFFSET              0x60
+#define RCC_APB1ENR_OFFSET              0x58
 #define USART_CR1_OFFSET                0x0
 #define USART_BRR_OFFSET                0xC
 #define USART_RDR_OFFSET                0x24
@@ -28,6 +28,7 @@
 void set_gpio_alt_func();
 void set_rcc_configs();
 void set_uart_configs();
+void start_xfer();
 
 
 #endif

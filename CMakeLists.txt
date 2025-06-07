@@ -23,6 +23,7 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/sources/startup_stm32.c
     ${CMAKE_SOURCE_DIR}/sources/blinky_abs.c
     ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart.c
+    ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart_ll.c
     ${FREERTOS_SRC}
 )
 add_executable(blinky.elf ${SOURCES})
