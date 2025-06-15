@@ -4,6 +4,7 @@
 #include "stm_uart_ll.h"
 
 uint8_t volatile  ch = 0;
+uint8_t volatile tx_state = 0;
 
 void set_rcc_configs()
 {
@@ -31,7 +32,6 @@ void set_gpio_alt_func()
     reg_val &= ~(( 0xF << 8 ) | ( 0xF << 12 ));
     reg_val |= ( 7 << 8 ) | ( 7 << 12 );
     REG_WR( GPIO_A_REG_BASE_ADDR + GPIO_AFRL_OFFSET , reg_val ); 
-
 }
 
 void set_uart_configs()
@@ -43,11 +43,6 @@ void set_uart_configs()
     reg_val |= 1;
     REG_WR( USART2_BASE_ADDR + USART_CR1_OFFSET , reg_val );
 }
-void start_xfer()
-{   
-    while(1);
-}
-
 
 /*PA 2 -> EXTI2[3:0]
  *PA 3 -> EXTI3[3:0]
@@ -70,16 +65,24 @@ uint32_t get_reg_val()
 }
 
 
-int32_t write_data()
+int32_t write_data(uint8_t ch )
 {
-    return 0;
+    REG_WR( USART2_BASE_ADDR + USART_TDR_OFFSET , ch );
+    while(1)
+    {
+        if(tx_state == 1)
+        {
+            tx_state = 0;
+            return 0;
+        }
+    }
+    return -1;
 }
 
 int32_t read_data()
 {
     return 0;
 }
-
  
 void USART2_IRQHandler(void)
 {
@@ -87,12 +90,12 @@ void USART2_IRQHandler(void)
     
     if (reg_val & (1 << 5))  
     {
+        tx_state = 1;
         ch = REG_RD( USART2_BASE_ADDR + USART_RDR_OFFSET );
     }
     if (reg_val & (1 << 6))   
     {
         REG_WR(USART2_BASE_ADDR + 0x20, (1 << 6));   
-        REG_WR( USART2_BASE_ADDR + USART_TDR_OFFSET , ch );
     }
     if (reg_val & (1 << 4))  
     {
