@@ -16,7 +16,7 @@ project(blinky C)
 set(CPU_FLAGS "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard")
 
 set(CMAKE_C_COMPILER arm-none-eabi-gcc)
-set(CMAKE_EXE_LINKER_FLAGS "-T ${CMAKE_SOURCE_DIR}/stm32g4.ld -nostartfiles -Wl,--gc-sections")
+set(CMAKE_EXE_LINKER_FLAGS "-T ${CMAKE_SOURCE_DIR}/stm32g4.ld -nostartfiles -Wl,--gc-sections -specs=nano.specs")
 set(CMAKE_C_FLAGS "${CPU_FLAGS} -std=c11 -g -O0 -Wall -Wextra -ffunction-sections -fdata-sections")
 set(SOURCES
     ${CMAKE_SOURCE_DIR}/sources/stm_blinky.c
@@ -24,6 +24,7 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/sources/blinky_abs.c
     ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart.c
     ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart_ll.c
+    ${CMAKE_SOURCE_DIR}/sources/console.c
     ${FREERTOS_SRC}
 )
 add_executable(blinky.elf ${SOURCES})

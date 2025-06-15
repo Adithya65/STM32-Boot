@@ -1,24 +1,23 @@
 #include <stdint.h>
+#include <errno.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
 #include "blinky_abs.h"
 #include "stm_uart.h"
+#include <stdio.h>
 
 SemaphoreHandle_t xSemaphore;
 
 static void led_task();
 static void delay_task();
 
-void vApplicationStackOverflowHook( TaskHandle_t xTask, char * pcTaskName )
-{
-    (void)xTask;
-    (void)pcTaskName;
-    return;
-}
 
 int main(void)
 {
+    (void)uart_init();
+    printf("hello world");
+
     BaseType_t ret;
     xSemaphore = xSemaphoreCreateBinary();
     configASSERT(xSemaphore != NULL);
@@ -28,8 +27,6 @@ int main(void)
 
     ret = xTaskCreate(delay_task,"delay",256,NULL,6,NULL); 
     configASSERT(ret == pdPASS);
-
-    (void)uart_init();
 
     stm_blinky_init();
 
@@ -63,5 +60,6 @@ void HardFault_Handler(void)
 {
     while(1); 
 }
+
 
 

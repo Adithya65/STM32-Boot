@@ -7,13 +7,13 @@ int uart_init()
     set_uart_isr();
     set_gpio_alt_func();
     set_uart_configs();
-    start_xfer();
+   
     return 0;
 }
 
-int32_t uart_write()
+int32_t uart_write(uint8_t ch)
 {
-    write_data();
+    write_data(ch);
     return 0;
 }
 
