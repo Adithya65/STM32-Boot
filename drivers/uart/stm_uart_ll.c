@@ -9,9 +9,6 @@
 SemaphoreHandle_t xSemaphoreTx;
 SemaphoreHandle_t xSemaphoreRx;
 
-uint8_t volatile  ch = 0;
-uint8_t volatile tx_state = 0;
-
 void set_rcc_configs()
 {
     uint32_t volatile reg_val = 0;
@@ -138,7 +135,6 @@ void USART2_IRQHandler(void)
     
     if (reg_val & (1 << 7))
     {
-        tx_state = 1;
         REG_WR(USART2_BASE_ADDR + USART_CR1_OFFSET, REG_RD(USART2_BASE_ADDR + USART_CR1_OFFSET) & ~(1 << 7));
         xSemaphoreGiveFromISR(xSemaphoreTx,NULL);
     }
