@@ -12,12 +12,9 @@ SemaphoreHandle_t xSemaphore;
 static void led_task();
 static void delay_task();
 
-int a =0;
-
 int main(void)
 {
     (void)uart_init();
-    a = 10;
 
     BaseType_t ret;
     xSemaphore = xSemaphoreCreateBinary();
@@ -26,8 +23,8 @@ int main(void)
     ret = xTaskCreate(led_task,"LED Blink",256,NULL,7,NULL); 
     configASSERT(ret == pdPASS);
 
-    ret = xTaskCreate(delay_task,"delay",256,NULL,6,NULL); 
-    configASSERT(ret == pdPASS);
+    /*ret = xTaskCreate(delay_task,"delay",256,NULL,6,NULL); 
+     configASSERT(ret == pdPASS);*/
 
     stm_blinky_init();
 
@@ -38,9 +35,18 @@ int main(void)
 
 void led_task()
 {
+    int number;
+    char c;
     while(1)
     {
-        printf("Hello world");
+        printf("Enter a character: \n\r");
+        c = getchar();
+        printf("You typed: %c\n\r", c);
+
+        printf("Enter a number:\n\r");
+        scanf("%d", &number);
+        printf("You typed: %d\n\r", number);
+        
         toggle_led();
         if (xSemaphoreTake(xSemaphore, portMAX_DELAY) == pdTRUE)
         {

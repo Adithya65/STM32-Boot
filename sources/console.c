@@ -50,12 +50,20 @@ int _lseek(int file, int ptr, int dir)
     return 0; 
 }
 
-int _read(int file, char *ptr, int len) 
-{ 
-    (void)file;
-    (void)len;
-    (void)ptr;
-    return 0; 
+int _read(int file, char *ptr, int len)
+{
+    if (file == 0)  
+    {
+        for (int volatile i = 0; i < len; i++)
+        {
+            int c = uart_read();  
+            if (c < 0)
+                return i;  
+            ptr[i] = (char)c;
+        }
+        return len;
+    }
+    return -1; 
 }
 
 int _kill(int pid, int sig)

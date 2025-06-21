@@ -39,7 +39,7 @@ void set_rcc_configs();
 void set_uart_configs();
 void start_xfer();
 int32_t write_data(uint8_t ch);
-int32_t read_data();
+uint32_t read_data();
 void set_uart_isr();
 
 

@@ -7,15 +7,13 @@
 #include "semphr.h"
 
 SemaphoreHandle_t xSemaphoreTx;
+SemaphoreHandle_t xSemaphoreRx;
 
 uint8_t volatile  ch = 0;
 uint8_t volatile tx_state = 0;
 
 void set_rcc_configs()
 {
-    xSemaphoreTx = xSemaphoreCreateBinary();
-    configASSERT(xSemaphoreTx != NULL);
-
     uint32_t volatile reg_val = 0;
 
     reg_val = REG_RD( RCC_BASE_ADDR + RCC_AHB2ENR_OFFSET );
@@ -58,6 +56,12 @@ void set_uart_configs()
 void set_uart_isr()
 {
     uint32_t volatile reg_val = 0;
+
+    xSemaphoreTx = xSemaphoreCreateBinary();
+    configASSERT(xSemaphoreTx != NULL);
+
+    xSemaphoreRx = xSemaphoreCreateBinary();
+    configASSERT(xSemaphoreRx != NULL);
     
     reg_val = REG_RD( RCC_BASE_ADDR + RCC_APB2ENR_OFFSET );
     reg_val |= 1;
@@ -65,7 +69,6 @@ void set_uart_isr()
 
     reg_val = (1 << (38 - 32)); 
     REG_WR(NVIC_ISER1, reg_val);
-
 
     reg_val = REG_RD(NVIC_IPR9);
     reg_val &= ~(0xFF << 16);         
@@ -80,10 +83,9 @@ uint32_t get_reg_val()
 
 int32_t write_data(uint8_t ch )
 {
- 
     REG_WR( USART2_BASE_ADDR + USART_TDR_OFFSET , ch );
     REG_WR(USART2_BASE_ADDR + USART_CR1_OFFSET,
-        REG_RD(USART2_BASE_ADDR + USART_CR1_OFFSET) |(1 << 7));
+            REG_RD(USART2_BASE_ADDR + USART_CR1_OFFSET) |(1 << 7));
 
     if (xSemaphoreTake(xSemaphoreTx, portMAX_DELAY) == pdTRUE)
     {
@@ -92,8 +94,16 @@ int32_t write_data(uint8_t ch )
     return -1;
 }
 
-int32_t read_data()
+uint32_t read_data()
 {
+    uint8_t character_data;
+    REG_WR(USART2_BASE_ADDR + USART_CR1_OFFSET,REG_RD(USART2_BASE_ADDR + USART_CR1_OFFSET) |(1 << 5));
+
+    if (xSemaphoreTake(xSemaphoreRx, portMAX_DELAY) == pdTRUE)
+    { 
+        character_data = REG_RD( USART2_BASE_ADDR + USART_RDR_OFFSET );
+        return character_data;
+    }
     return 0;
 }
  
@@ -103,7 +113,8 @@ void USART2_IRQHandler(void)
     
     if (reg_val & (1 << 5))  
     {
-        ch = REG_RD( USART2_BASE_ADDR + USART_RDR_OFFSET );
+        REG_WR(USART2_BASE_ADDR + USART_CR1_OFFSET, REG_RD(USART2_BASE_ADDR + USART_CR1_OFFSET) & ~(1 << 5));
+        xSemaphoreGiveFromISR(xSemaphoreRx,NULL);
     }
     if (reg_val & (1 << 6))   
     {

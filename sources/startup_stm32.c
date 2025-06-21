@@ -43,7 +43,6 @@ void isr_reset(void)
 {
     clear_bss();
     copy_data();
-    uint32_t temp = *(uint32_t*)0x8000004; 
     main();
     while(1);
 }
