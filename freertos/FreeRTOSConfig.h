@@ -323,7 +323,7 @@
  * to the highest interrupt priority (0).  Not supported by all FreeRTOS ports.
  * See https://www.freertos.org/RTOS-Cortex-M3-M4.html for information specific
  * to ARM Cortex-M devices. */
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY     0x50
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY     0x10
 
 /* Another name for configMAX_SYSCALL_INTERRUPT_PRIORITY - the name used depends
  * on the FreeRTOS port. */
@@ -362,7 +362,7 @@
  * configCHECK_FOR_STACK_OVERFLOW is set to 1. See
  * https://www.freertos.org/Stacks-and-stack-overflow-checking.html  Defaults to
  * 0 if left undefined. */
-#define configCHECK_FOR_STACK_OVERFLOW        2
+#define configCHECK_FOR_STACK_OVERFLOW        0
 
 /******************************************************************************/
 /* Run time and task stats gathering related definitions. *********************/

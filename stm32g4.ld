@@ -1,25 +1,27 @@
 MEMORY
 {
-    flash (rx) : ORIGIN =0x08000000, LENGTH = 32K
-    ram (rwx) : ORIGIN = 0x20000000,LENGTH = 64K
+    flash (rx) : ORIGIN = 0x08000000, LENGTH = 64K
+    ram   (rwx) : ORIGIN = 0x20000000, LENGTH = 64K
 }
 
-_eram = ORIGIN(ram) + LENGTH(ram);
-_stack = _eram;
+_estack = ORIGIN(ram) + LENGTH(ram); 
 
 SECTIONS
 {
-    .text : ALIGN(4)
+    .ivt :
     {
         KEEP(*(.ivt))
+    } > flash
+
+    .text : ALIGN(4)
+    {
         *(.text*)
         . = ALIGN(4);
         _etext = .;
     } > flash
 
-
     _idata = LOADADDR(.data);
-    .data :ALIGN(4)
+    .data : ALIGN(4)
     {
         _data = .;
         *(.data*)
@@ -33,23 +35,22 @@ SECTIONS
         *(.bss*)
         . = ALIGN(4);
         _ebss = .;
+        _end = .;   /* Heap starts here */
     } > ram
+
     .heap (NOLOAD) : ALIGN(8)
     {
         _heap_start = .;
-        . = . + 0x200;  
+        . = . + 0x400;  /* 8 KB heap */
         _heap_end = .;
     } > ram
 
-    .stack (NOLOAD) : ALIGN(8)
+    .stack (NOLOAD) :
     {
-        _stack_start = .;
-        . = . + 0x1200;  
-        _stack_end = .;
+        . = ALIGN(8);
+        . = . + 0x400;
+        . = ALIGN(8);
     } > ram
 
-    _stack = _stack_end;
+    _stack = _estack;
 }
-
-
-
