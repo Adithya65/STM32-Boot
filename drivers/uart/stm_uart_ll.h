@@ -31,6 +31,8 @@
 /*REG OFFSET MACROS OFFSET ENDS*/
 
 #define NVIC_ISER1  0xE000E104
+#define NVIC_IPR    0xE000E400
+#define NVIC_IPR9   (NVIC_IPR + 0x4*9) 
 
 void set_gpio_alt_func();
 void set_rcc_configs();

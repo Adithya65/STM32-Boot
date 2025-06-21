@@ -2,12 +2,20 @@
 #include <errno.h>
 #include "stm_reg_access.h"
 #include "stm_uart_ll.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "semphr.h"
+
+SemaphoreHandle_t xSemaphoreTx;
 
 uint8_t volatile  ch = 0;
 uint8_t volatile tx_state = 0;
 
 void set_rcc_configs()
 {
+    xSemaphoreTx = xSemaphoreCreateBinary();
+    configASSERT(xSemaphoreTx != NULL);
+
     uint32_t volatile reg_val = 0;
 
     reg_val = REG_RD( RCC_BASE_ADDR + RCC_AHB2ENR_OFFSET );
@@ -57,6 +65,12 @@ void set_uart_isr()
 
     reg_val = (1 << (38 - 32)); 
     REG_WR(NVIC_ISER1, reg_val);
+
+
+    reg_val = REG_RD(NVIC_IPR9);
+    reg_val &= ~(0xFF << 16);         
+    reg_val |=  (0x20 << 16);         
+    REG_WR(NVIC_IPR9, reg_val);
 }
 
 uint32_t get_reg_val()
@@ -64,20 +78,16 @@ uint32_t get_reg_val()
     return REG_RD( USART2_BASE_ADDR + USART_ISR_OFFSET );
 }
 
-
 int32_t write_data(uint8_t ch )
 {
  
     REG_WR( USART2_BASE_ADDR + USART_TDR_OFFSET , ch );
     REG_WR(USART2_BASE_ADDR + USART_CR1_OFFSET,
         REG_RD(USART2_BASE_ADDR + USART_CR1_OFFSET) |(1 << 7));
-    while(1)
+
+    if (xSemaphoreTake(xSemaphoreTx, portMAX_DELAY) == pdTRUE)
     {
-        if(tx_state == 1)
-        {
-            tx_state = 0;
-            return 0;
-        }
+         return 0;
     }
     return -1;
 }
@@ -93,7 +103,6 @@ void USART2_IRQHandler(void)
     
     if (reg_val & (1 << 5))  
     {
-        
         ch = REG_RD( USART2_BASE_ADDR + USART_RDR_OFFSET );
     }
     if (reg_val & (1 << 6))   
@@ -119,10 +128,9 @@ void USART2_IRQHandler(void)
     if (reg_val & (1 << 7))
     {
         tx_state = 1;
-        REG_WR(USART2_BASE_ADDR + USART_CR1_OFFSET,
-            REG_RD(USART2_BASE_ADDR + USART_CR1_OFFSET) & ~(1 << 7));
+        REG_WR(USART2_BASE_ADDR + USART_CR1_OFFSET, REG_RD(USART2_BASE_ADDR + USART_CR1_OFFSET) & ~(1 << 7));
+        xSemaphoreGiveFromISR(xSemaphoreTx,NULL);
     }
-    
 }
 
 

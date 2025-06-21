@@ -13,8 +13,7 @@ int uart_init()
 
 int32_t uart_write(uint8_t ch)
 {
-    write_data(ch);
-    return 0;
+   return write_data(ch);
 }
 
 int32_t uart_read()
