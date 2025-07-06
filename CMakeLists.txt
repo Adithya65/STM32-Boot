@@ -27,6 +27,6 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/sources/console.c
     ${FREERTOS_SRC}
 )
-add_executable(blinky.elf ${SOURCES})
-target_include_directories(blinky.elf PRIVATE ${CMAKE_SOURCE_DIR}/includes  ${CMAKE_SOURCE_DIR}/drivers/uart  ${FREERTOS_KERNEL_DIR}/include ${FREERTOS_PORT_DIR} )
+add_executable(RTOS.elf ${SOURCES})
+target_include_directories(RTOS.elf PRIVATE ${CMAKE_SOURCE_DIR}/includes  ${CMAKE_SOURCE_DIR}/drivers/uart  ${FREERTOS_KERNEL_DIR}/include ${FREERTOS_PORT_DIR} )
 

@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceFolder}/build",
+            "executable": "${workspaceFolder}/build/RTOS.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "breakAfterReset": true,
+            "runToEntryPoint": "",
+            "servertype": "openocd",
+            "gdbPath": "gdb-multiarch",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32g4x.cfg"
+            ],
+            "preLaunchCommands": [
+                "monitor program ${workspaceFolder}/build/RTOS.elf verify reset"
+            ],
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}
+
