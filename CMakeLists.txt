@@ -25,6 +25,7 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart.c
     ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart_ll.c
     ${CMAKE_SOURCE_DIR}/sources/console.c
+    ${CMAKE_SOURCE_DIR}/sources/main.c
     ${FREERTOS_SRC}
 )
 add_executable(RTOS.elf ${SOURCES})
