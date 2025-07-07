@@ -13,7 +13,7 @@ static void led_task();
 static void delay_task();
 static void print_task();
 
-int main(void)
+void stm_blinky_app()
 {
     (void)uart_init();
 
