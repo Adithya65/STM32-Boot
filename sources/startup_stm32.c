@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "stm_uart.h"
 
 #define ENABLE_DEBUG_REGS  0
 
@@ -43,6 +44,8 @@ void isr_reset(void)
 {
     clear_bss();
     copy_data();
+    /*hardware inits*/
+    uart_init();
     main();
     while(1);
 }

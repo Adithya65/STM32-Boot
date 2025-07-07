@@ -26,8 +26,9 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart_ll.c
     ${CMAKE_SOURCE_DIR}/sources/console.c
     ${CMAKE_SOURCE_DIR}/sources/main.c
+    ${CMAKE_SOURCE_DIR}/tests/freertos_tests.c
     ${FREERTOS_SRC}
 )
 add_executable(RTOS.elf ${SOURCES})
-target_include_directories(RTOS.elf PRIVATE ${CMAKE_SOURCE_DIR}/includes  ${CMAKE_SOURCE_DIR}/drivers/uart  ${FREERTOS_KERNEL_DIR}/include ${FREERTOS_PORT_DIR} )
+target_include_directories(RTOS.elf PRIVATE ${CMAKE_SOURCE_DIR}/includes  ${CMAKE_SOURCE_DIR}/drivers/uart  ${CMAKE_SOURCE_DIR}/tests/ ${FREERTOS_KERNEL_DIR}/include ${FREERTOS_PORT_DIR} )
 

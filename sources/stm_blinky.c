@@ -1,11 +1,10 @@
 #include <stdint.h>
 #include <errno.h>
+#include <stdio.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
 #include "blinky_abs.h"
-#include "stm_uart.h"
-#include <stdio.h>
 
 SemaphoreHandle_t xSemaphore;
 
@@ -15,8 +14,6 @@ static void print_task();
 
 void stm_blinky_app()
 {
-    (void)uart_init();
-
     BaseType_t ret;
     xSemaphore = xSemaphoreCreateBinary();
     configASSERT(xSemaphore != NULL);
