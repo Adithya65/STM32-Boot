@@ -1,6 +1,12 @@
 #include <stdint.h>
 #include "stm_uart_ll.h"
 
+/*TODO:
+ * Add apis to set and modify configs[ Baudrate, Start-Stop bits ]
+ * update read/write wrappers more functional
+ */
+
+
 int uart_init()
 {
     set_rcc_configs();
