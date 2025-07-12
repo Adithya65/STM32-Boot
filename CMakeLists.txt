@@ -12,8 +12,10 @@ set(FREERTOS_SRC
 )
 
 set(FREERTOS_TESTS
-    ${CMAKE_SOURCE_DIR}/tests/semaphore_tests.c
-    ${CMAKE_SOURCE_DIR}/tests/freertos_tests.c
+    ${CMAKE_SOURCE_DIR}/tests/freertos/freertos_tests.c
+    ${CMAKE_SOURCE_DIR}/tests/freertos/semaphore_tests.c
+    ${CMAKE_SOURCE_DIR}/tests/freertos/mutex_tests.c
+    ${CMAKE_SOURCE_DIR}/tests/freertos/queue_tests.c
 )
 
 set(UART_DRIVER
@@ -46,9 +48,8 @@ add_executable(RTOS.elf ${SOURCES})
 target_include_directories(RTOS.elf PRIVATE 
     ${CMAKE_SOURCE_DIR}/includes  
     ${CMAKE_SOURCE_DIR}/drivers/uart  
-    ${CMAKE_SOURCE_DIR}/tests/ 
+    ${CMAKE_SOURCE_DIR}/tests/freertos 
     ${FREERTOS_KERNEL_DIR}/include 
     ${FREERTOS_PORT_DIR}
-    ${CMAKE_SOURCE_DIR}/tests
 )
 

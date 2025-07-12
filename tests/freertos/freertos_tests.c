@@ -7,7 +7,9 @@ void freertos_tests()
 #elif QUEUE_TEST
     queue_tests();
 #elif MUTEX_TEST
-    mutext_tests();
+    mutex_tests();
+#else
+#error invalid selection
 #endif 
 }
 

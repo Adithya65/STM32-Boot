@@ -24,7 +24,7 @@ void clear_bss()
     unsigned int *bss_start = &_bss;
     while(bss_start < & _ebss)
     {
-        *bss_start =0;
+        *bss_start = 0;
         bss_start++;
     }
 }
