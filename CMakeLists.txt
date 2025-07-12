@@ -10,6 +10,18 @@ set(FREERTOS_SRC
     ${FREERTOS_PORT_DIR}/heap_4.c
     ${FREERTOS_PORT_DIR}/port.c
 )
+
+set(FREERTOS_TESTS
+    ${CMAKE_SOURCE_DIR}/tests/semaphore_tests.c
+    ${CMAKE_SOURCE_DIR}/tests/freertos_tests.c
+)
+
+set(UART_DRIVER
+    ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart.c
+    ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart_ll.c
+)
+
+
 project(blinky C)
 #set(MCU "cortex-m4")
 #set(CPU_FLAGS "-mcpu=${MCU} -mthumb ")
@@ -22,13 +34,21 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/sources/stm_blinky.c
     ${CMAKE_SOURCE_DIR}/sources/startup_stm32.c
     ${CMAKE_SOURCE_DIR}/sources/blinky_abs.c
-    ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart.c
-    ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart_ll.c
     ${CMAKE_SOURCE_DIR}/sources/console.c
     ${CMAKE_SOURCE_DIR}/sources/main.c
-    ${CMAKE_SOURCE_DIR}/tests/freertos_tests.c
+    ${UART_DRIVER}
     ${FREERTOS_SRC}
+    ${FREERTOS_TESTS}
 )
+
 add_executable(RTOS.elf ${SOURCES})
-target_include_directories(RTOS.elf PRIVATE ${CMAKE_SOURCE_DIR}/includes  ${CMAKE_SOURCE_DIR}/drivers/uart  ${CMAKE_SOURCE_DIR}/tests/ ${FREERTOS_KERNEL_DIR}/include ${FREERTOS_PORT_DIR} )
+
+target_include_directories(RTOS.elf PRIVATE 
+    ${CMAKE_SOURCE_DIR}/includes  
+    ${CMAKE_SOURCE_DIR}/drivers/uart  
+    ${CMAKE_SOURCE_DIR}/tests/ 
+    ${FREERTOS_KERNEL_DIR}/include 
+    ${FREERTOS_PORT_DIR}
+    ${CMAKE_SOURCE_DIR}/tests
+)
 
