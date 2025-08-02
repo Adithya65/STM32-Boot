@@ -23,10 +23,7 @@ set(UART_DRIVER
     ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart_ll.c
 )
 
-
 project(blinky C)
-#set(MCU "cortex-m4")
-#set(CPU_FLAGS "-mcpu=${MCU} -mthumb ")
 set(CPU_FLAGS "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard")
 
 set(CMAKE_C_COMPILER arm-none-eabi-gcc)
@@ -38,6 +35,9 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/sources/blinky_abs.c
     ${CMAKE_SOURCE_DIR}/sources/console.c
     ${CMAKE_SOURCE_DIR}/sources/main.c
+    ${CMAKE_SOURCE_DIR}/cli/base/FreeRTOS_CLI.c
+    ${CMAKE_SOURCE_DIR}/cli/app/cli_sample.c
+    ${CMAKE_SOURCE_DIR}/cli/app/cli_cal.c
     ${UART_DRIVER}
     ${FREERTOS_SRC}
     ${FREERTOS_TESTS}
@@ -49,6 +49,8 @@ target_include_directories(RTOS.elf PRIVATE
     ${CMAKE_SOURCE_DIR}/includes  
     ${CMAKE_SOURCE_DIR}/drivers/uart  
     ${CMAKE_SOURCE_DIR}/tests/freertos 
+    ${CMAKE_SOURCE_DIR}/cli/base/ 
+    ${CMAKE_SOURCE_DIR}/cli/app/ 
     ${FREERTOS_KERNEL_DIR}/include 
     ${FREERTOS_PORT_DIR}
 )
