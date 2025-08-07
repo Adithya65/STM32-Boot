@@ -10,17 +10,20 @@ extern void vRegisterCLICommands(void);
 #define MAX_INPUT_SIZE 60
 #define MAX_OUTPUT_SIZE 256
 
+static char cInputBuffer[MAX_INPUT_SIZE];
+static char cOutputBuffer[MAX_OUTPUT_SIZE];
+static char cIsZeroBuffer[MAX_INPUT_SIZE];
+
 void vCLITask(void *pvParameters)
 {
-    char cInputBuffer[MAX_INPUT_SIZE] = {0};
-    char cOutputBuffer[MAX_OUTPUT_SIZE];
+
     BaseType_t xMoreDataToFollow;
     int inputIndex = 0;
     char c;
 
     (void)pvParameters;
 
-    printf("\r\nstm_v3 "); 
+    printf("\r\nSTM32#"); 
 
     for (;;)
     {
@@ -28,8 +31,12 @@ void vCLITask(void *pvParameters)
 
         if (c == '\r' || c == '\n')
         {
+            if(!(memcmp(cInputBuffer,cIsZeroBuffer,MAX_INPUT_SIZE)))
+            {
+                printf("\r\nSTM32#");
+                continue;
+            }
             printf("\r\n");
-
             do
             {
                 xMoreDataToFollow = FreeRTOS_CLIProcessCommand(cInputBuffer, cOutputBuffer, MAX_OUTPUT_SIZE);
@@ -38,7 +45,7 @@ void vCLITask(void *pvParameters)
 
             memset(cInputBuffer, 0, MAX_INPUT_SIZE);
             inputIndex = 0;
-            printf("> ");
+            printf("STM32#");
         }
         else if (isprint((int)c) && inputIndex < MAX_INPUT_SIZE - 1)
         {
