@@ -12,13 +12,15 @@
 
 
 #define SEMAPHORE_TEST          0
-#define QUEUE_TEST              1
+#define QUEUE_TEST              0
 #define MUTEX_TEST              0
+#define NUM_TEST                1
 
 void freertos_tests();
 
 int semaphore_tests();
 int mutex_tests();
 int queue_tests();
+int number_tests();
 
 #endif

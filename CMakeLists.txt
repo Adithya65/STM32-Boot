@@ -16,6 +16,7 @@ set(FREERTOS_TESTS
     ${CMAKE_SOURCE_DIR}/tests/freertos/semaphore_tests.c
     ${CMAKE_SOURCE_DIR}/tests/freertos/mutex_tests.c
     ${CMAKE_SOURCE_DIR}/tests/freertos/queue_tests.c
+    ${CMAKE_SOURCE_DIR}/tests/freertos/print_number_tests.c
 )
 
 set(UART_DRIVER

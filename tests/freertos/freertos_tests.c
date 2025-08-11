@@ -8,6 +8,8 @@ void freertos_tests()
     queue_tests();
 #elif MUTEX_TEST
     mutex_tests();
+#elif NUM_TEST
+    number_tests();
 #else
 #error invalid selection
 #endif 

@@ -1,9 +1,9 @@
 #include "stm_blinky.h"
 #include "freertos_tests.h"
 
-#define RUN_FREERTOS_TESTS   0
+#define RUN_FREERTOS_TESTS   1
 #define RUN_STM_SAMPLE       0
-#define RUN_CLI_TASK         1
+#define RUN_CLI_TASK         0
 
 void cli_task();
 
