@@ -24,6 +24,11 @@ set(UART_DRIVER
     ${CMAKE_SOURCE_DIR}/drivers/uart/stm_uart_ll.c
 )
 
+set(I2C_DRIVER
+    ${CMAKE_SOURCE_DIR}/drivers/i2c/stm_i2c.c
+)
+
+
 project(blinky C)
 set(CPU_FLAGS "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard")
 
@@ -40,6 +45,7 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/cli/app/cli_sample.c
     ${CMAKE_SOURCE_DIR}/cli/app/cli_cal.c
     ${UART_DRIVER}
+    ${I2C_DRIVER}
     ${FREERTOS_SRC}
     ${FREERTOS_TESTS}
 )
@@ -49,6 +55,7 @@ add_executable(RTOS.elf ${SOURCES})
 target_include_directories(RTOS.elf PRIVATE 
     ${CMAKE_SOURCE_DIR}/includes  
     ${CMAKE_SOURCE_DIR}/drivers/uart  
+    ${CMAKE_SOURCE_DIR}/drivers/i2c 
     ${CMAKE_SOURCE_DIR}/tests/freertos 
     ${CMAKE_SOURCE_DIR}/cli/base/ 
     ${CMAKE_SOURCE_DIR}/cli/app/ 
