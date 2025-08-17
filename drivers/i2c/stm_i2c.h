@@ -21,5 +21,7 @@
 #define I2C_ICR_OFFSET                  0x1C
 
 
+void i2c_init(void);
+int32_t i2c_write_byte(uint8_t addr, uint8_t* data,uint32_t len);
 
 #endif

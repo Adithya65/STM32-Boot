@@ -12,8 +12,7 @@ void cli_task();
 int main()
 {
 #if RUN_STM_SAMPLE
-    //stm_blinky_app();
-    i2c_test();
+    stm_samples();
 #elif RUN_FREERTOS_TESTS
     (void)freertos_tests();
 #elif RUN_CLI_TASK
