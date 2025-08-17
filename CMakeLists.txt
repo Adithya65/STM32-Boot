@@ -36,9 +36,10 @@ set(CMAKE_C_COMPILER arm-none-eabi-gcc)
 set(CMAKE_EXE_LINKER_FLAGS "-T ${CMAKE_SOURCE_DIR}/stm32g4.ld -nostartfiles -Wl,--gc-sections -specs=nano.specs")
 set(CMAKE_C_FLAGS "${CPU_FLAGS} -std=c11 -g -O0 -Wall -Wextra -ffunction-sections -fdata-sections")
 set(SOURCES
-    ${CMAKE_SOURCE_DIR}/sources/stm_blinky.c
+    ${CMAKE_SOURCE_DIR}/samples/stm_blinky.c
     ${CMAKE_SOURCE_DIR}/sources/startup_stm32.c
-    ${CMAKE_SOURCE_DIR}/sources/blinky_abs.c
+    ${CMAKE_SOURCE_DIR}/samples/blinky_abs.c
+    ${CMAKE_SOURCE_DIR}/samples/stm_samples.c
     ${CMAKE_SOURCE_DIR}/sources/console.c
     ${CMAKE_SOURCE_DIR}/sources/main.c
     ${CMAKE_SOURCE_DIR}/cli/base/FreeRTOS_CLI.c
