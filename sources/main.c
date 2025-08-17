@@ -1,16 +1,19 @@
 #include "stm_blinky.h"
 #include "freertos_tests.h"
+#include <stdint.h>
 
-#define RUN_FREERTOS_TESTS   1
-#define RUN_STM_SAMPLE       0
+#define RUN_FREERTOS_TESTS   0
+#define RUN_STM_SAMPLE       1
 #define RUN_CLI_TASK         0
 
 void cli_task();
 
+
 int main()
 {
 #if RUN_STM_SAMPLE
-    stm_blinky_app();
+    //stm_blinky_app();
+    i2c_test();
 #elif RUN_FREERTOS_TESTS
     (void)freertos_tests();
 #elif RUN_CLI_TASK

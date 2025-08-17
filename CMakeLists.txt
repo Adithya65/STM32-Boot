@@ -44,6 +44,7 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/cli/base/FreeRTOS_CLI.c
     ${CMAKE_SOURCE_DIR}/cli/app/cli_sample.c
     ${CMAKE_SOURCE_DIR}/cli/app/cli_cal.c
+    ${CMAKE_SOURCE_DIR}/samples/i2c_sample.c
     ${UART_DRIVER}
     ${I2C_DRIVER}
     ${FREERTOS_SRC}
