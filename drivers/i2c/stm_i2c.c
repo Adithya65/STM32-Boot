@@ -8,6 +8,7 @@
 static void init_rcc();
 static void config_gpio();
 static void init_i2c();
+static int32_t i2c_write_byte(uint8_t addr, uint8_t* data,uint16_t len);
 
 void i2c_init(void)
 {
@@ -16,15 +17,51 @@ void i2c_init(void)
     init_i2c();
 }
 
-int32_t i2c_write_byte(uint8_t addr, uint8_t* data,uint32_t len)
+void i2c_stop()
 {
     uint32_t volatile reg_val, timeout;
+
+    reg_val = REG_RD(I2C1_BASE_ADDR + I2C_CR2_OFFSET);
+    reg_val |= 1 << 14;
+    REG_WR(I2C1_BASE_ADDR + I2C_CR2_OFFSET, reg_val);
+ 
+    timeout = TIMEOUT;
+    while (!(REG_RD(I2C1_BASE_ADDR + I2C_ISR_OFFSET) & (1 << 5)))
+    {
+        if (--timeout == 0) 
+            return -EINVAL;
+    }
+    REG_WR(I2C1_BASE_ADDR + I2C_ICR_OFFSET, (1 << 5));
+}
+
+
+int32_t i2c_write_data(uint8_t addr, uint8_t* data,uint32_t len)
+{
+    int32_t ret =0;
+    uint32_t sent = 0;
+
+
+    while( sent < len )
+    {
+        uint16_t chunk = (((len - sent) < 255 )?(len -sent):255);
+        ret = i2c_write_byte(addr,data+sent,chunk);
+        if(ret != 0)
+            return -EINVAL;
+        sent += chunk;
+    }
+
+    return ret;
+}
+
+        
+static int32_t i2c_write_byte(uint8_t addr, uint8_t* data,uint16_t len)
+{
+    uint32_t volatile reg_val , timeout;
 
     reg_val = (addr << 1) | (1 << 13) | (len << 16); 
     REG_WR(I2C1_BASE_ADDR + I2C_CR2_OFFSET, reg_val);
 
-
-    for(uint32_t volatile i =0; i < len ; i++)
+    for(uint32_t volatile i =0; i < len; i++)
     {
         timeout = TIMEOUT;
         REG_WR(I2C1_BASE_ADDR + I2C_TXDR_OFFSET, data[i]);
@@ -42,21 +79,8 @@ int32_t i2c_write_byte(uint8_t addr, uint8_t* data,uint32_t len)
             return -EINVAL;
     }
 
-    reg_val = REG_RD(I2C1_BASE_ADDR + I2C_CR2_OFFSET);
-    reg_val |= 1 << 14;
-    REG_WR(I2C1_BASE_ADDR + I2C_CR2_OFFSET, reg_val);
- 
-    timeout = TIMEOUT;
-    while (!(REG_RD(I2C1_BASE_ADDR + I2C_ISR_OFFSET) & (1 << 5)))
-    {
-        if (--timeout == 0) 
-            return -EINVAL;
-    }
-    REG_WR(I2C1_BASE_ADDR + I2C_ICR_OFFSET, (1 << 5));
-
     return 0;
 }
-
 
 static void init_rcc()
 {
