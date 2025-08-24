@@ -4,31 +4,40 @@
 #include <errno.h>
 #include "FreeRTOS.h"
 #include "task.h"
+#include "stm_i2c.h"
+
+#define DISP_HEIGHT   64
+#define DISP_WIDTH    128
+#define START_TX    1
+#define AUTO_REL    1
+
+#define MAX_DISPLAY_BUFF_SIZE    (DISP_HEIGHT * DISP_WIDTH)/8
 
 static void i2c_scan_task(void *pvParameters);
 static void i2c_oled_display();
-static int32_t send_command(uint32_t cmd);
+static int32_t oled_send_command(uint32_t cmd);
 static int32_t oled_send_data(uint8_t *data, uint16_t len);
 
-uint8_t data1[8192];
+uint8_t display_data[8192];
+uint8_t buff[256];
 
 int32_t i2c_sample(void)
 {
     i2c_init();
 
     xTaskCreate(i2c_scan_task,
-                "I2C_Scan",
-                256,
-                NULL,
-                1,
-                NULL);
+            "I2C_Scan",
+            256,
+            NULL,
+            1,
+            NULL);
 
     xTaskCreate(i2c_oled_display,
-                "I2C_OLED",
-                512,
-                NULL,
-                1,
-                NULL);
+            "I2C_OLED",
+            512,
+            NULL,
+            1,
+            NULL);
 
     vTaskStartScheduler();
 
@@ -39,97 +48,121 @@ static void i2c_scan_task(void *pvParameters)
 {
     (void)pvParameters;
     uint8_t test_data =0;
+    printf("Scanning I2C bus...\r\n");
 
-        printf("Scanning I2C bus...\r\n");
-
-        for (uint8_t addr = 1; addr < 128; addr++)
-        {
-            if (i2c_write_data(addr,&test_data,1) == 0)
-                printf("Device found at 0x%02X\n\r", addr);
-        }
-    
-        printf("Scan complete.\n\r");
-        vTaskSuspend(NULL);
+    for (uint8_t addr = 1; addr < 128; addr++)
+    {
+        if (i2c_write_data(addr,&test_data,1,1,0) == 0)
+            printf("Device found at 0x%02X\n\r", addr);
+    }
+    printf("Scan complete.\n\r");
+    vTaskSuspend(NULL);
 }
 
 static void i2c_oled_display()
 {
-   int32_t ret;
-   printf("\rStarting OLED display task \r\n");
-   send_command(0xAE);  
-   send_command(0xA8);  
-   send_command(0x3F); 
+    printf("\rStarting OLED display task \r\n");
+    oled_send_command(0xAE);  
+    oled_send_command(0xA8);  
+    oled_send_command(0x3F); 
+    oled_send_command(0xD3);  
+    oled_send_command(0x00);  
+    oled_send_command(0x40);  
+    oled_send_command(0xA1);  
+    oled_send_command(0xC8);  
+    oled_send_command(0xDA);  
+    oled_send_command(0x12); 
+    oled_send_command(0x81);  
+    oled_send_command(0x7F);  
+    oled_send_command(0xA4);  
+    oled_send_command(0xA6);  
+    oled_send_command(0xD5);  
+    oled_send_command(0x80);  
+    oled_send_command(0x8D);  
+    oled_send_command(0x14);
+#if AUTO_PAGE_HANDLE_EN 
+    oled_send_command(0x20);  
+    oled_send_command(0x00);  
+    oled_send_command(0x21);
+    oled_send_command(0x00);   
+    oled_send_command(0x7F);   
+    oled_send_command(0x22);
+    oled_send_command(0x00);   
+    oled_send_command(0x07);   
+#endif
+    oled_send_command(0xAF);  
 
-    send_command(0xD3);  
-    send_command(0x00);  
-
-    send_command(0x40);  
-    send_command(0xA1);  
-
-    send_command(0xC8);  
-
-    send_command(0xDA);  
-    send_command(0x12); 
-
-    send_command(0x81);  
-    send_command(0x7F);  
-
-    send_command(0xA4);  
-    send_command(0xA6);  
-
-    send_command(0xD5);  
-    send_command(0x80);  
-
-    send_command(0x8D);  
-    send_command(0x14);
-
-    send_command(0xAF);  
-     
-    memset(data1,0xFF ,8192);
-    memset(&data1[255],0x0 ,1024);
-
-    if(oled_send_data(data1,8192))
+    memset(display_data,0xFF ,1024);
+    if(oled_send_data(display_data,1024))
     {
         printf("\r ERRORR!!\n");
     }
-   
-   while(1);
+
+    while(1);
 }
 
-static int32_t send_command(uint32_t cmd)
+static int32_t oled_send_command(uint32_t cmd)
 {
     int32_t ret;
     uint8_t data[2];
     data[0] = 0x0;
     data[1] = cmd;
      
-    ret = i2c_write_data(0x3C,data,2);        
+    ret = i2c_write_data(0x3C,data,2,1,0);        
     if(ret != 0)
         return -EINVAL;
     i2c_stop();
     return 0;
 }
-uint8_t buff[256];
+
+
+#if AUTO_PAGE_HANDLE_EN 
 static int32_t oled_send_data(uint8_t *data, uint16_t len)
 {
     uint32_t sent = 0;
     uint8_t ctl = 0x40;
     int32_t ret;
 
+    ret = i2c_write_data(0x3C,&ctl,1,START_TX,AUTO_REL);
+
     while (sent < len)
     {
         uint16_t chunk = ((len - sent) < 255) ? (len - sent) : 255;
-        buff[0] =0x40;
-        memcpy(&buff[1], &data[sent], chunk);
-        ret = i2c_write_data(0x3C, buff, chunk+1);
+        memcpy(buff, &data[sent], chunk);
+        ret = i2c_write_data(0x3C, buff, chunk,0,AUTO_REL);
         if (ret != 0)
         {
             i2c_stop();
             return -EINVAL;
         }
         sent += chunk;
-        // i2c_stop();
     }
     
     return ret;
 }
+
+#else
+static int32_t oled_send_data(uint8_t *data, uint16_t len)
+{
+    uint32_t sent = 0;
+    uint8_t ctl = 0x40;
+    int32_t ret;
+
+    for (int volatile i =0; i < 8;i++)
+    {
+        ret = i2c_write_data(0x3C,&ctl,1,START_TX,AUTO_REL);
+
+        uint16_t chunk = ((len - sent) < 127) ? (len - sent) : 127;
+        memcpy(buff, &data[sent], chunk);
+        ret = i2c_write_data(0x3C, buff, chunk,0,0);
+        i2c_stop();
+
+        oled_send_command(0xB0 + i);   
+        oled_send_command(0x00);          
+        oled_send_command(0x10);
+        sent += chunk;
+    }
+
+    return ret;
+}
+#endif

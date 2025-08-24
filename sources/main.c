@@ -7,7 +7,7 @@
 #define RUN_CLI_TASK         0
 
 void cli_task();
-
+void stm_samples();
 
 int main()
 {

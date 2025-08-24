@@ -22,6 +22,7 @@
 
 
 void i2c_init(void);
-int32_t i2c_write_data(uint8_t addr, uint8_t* data,uint32_t len);
+void i2c_stop();
+int32_t i2c_write_data(uint8_t addr, uint8_t* data,uint32_t len, uint8_t start,uint8_t reload);
 
 #endif
