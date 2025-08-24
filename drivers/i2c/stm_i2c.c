@@ -5,6 +5,11 @@
 
 #define TIMEOUT 1000
 
+
+/*TODO:I2c write api does not look good, replace arguments with struct
+  *Handle void stop correctly
+  */
+
 static void init_rcc();
 static void config_gpio();
 static void init_i2c();
