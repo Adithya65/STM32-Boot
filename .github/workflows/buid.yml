@@ -1,0 +1,42 @@
+name: STM32 Build Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Install ARM cross compiler + tools
+      - name: Install ARM GCC Toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi cmake make
+
+      # 3. Configure with CMake
+      - name: Configure project
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+
+      # 4. Build firmware
+      - name: Build firmware
+        run: |
+          cd build
+          make -j$(nproc)
+
+      # 5. Check ELF file size (helpful sanity check)
+      - name: Firmware size
+        run: |
+          cd build
+          arm-none-eabi-size *.elf || true
+
