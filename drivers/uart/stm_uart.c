@@ -5,7 +5,7 @@
  * Add apis to set and modify configs[ Baudrate, Start-Stop bits ]
  * update read/write wrappers more functional
  */
-
+FORCE_ERROR
 
 int uart_init()
 {
