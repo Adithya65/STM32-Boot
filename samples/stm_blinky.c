@@ -18,20 +18,21 @@ void stm_blinky_app()
     xSemaphore = xSemaphoreCreateBinary();
     configASSERT(xSemaphore != NULL);
 
-    ret = xTaskCreate(led_task,"LED Blink",256,NULL,7,NULL); 
+    ret = xTaskCreate(led_task, "LED Blink", 256, NULL, 7, NULL);
     configASSERT(ret == pdPASS);
 
-    ret = xTaskCreate(delay_task,"delay",256,NULL,6,NULL); 
+    ret = xTaskCreate(delay_task, "delay", 256, NULL, 6, NULL);
     configASSERT(ret == pdPASS);
 
-    ret = xTaskCreate(print_task,"print",256,NULL,8,NULL); 
+    ret = xTaskCreate(print_task, "print", 256, NULL, 8, NULL);
     configASSERT(ret == pdPASS);
 
     stm_blinky_init();
 
-    vTaskStartScheduler();       
+    vTaskStartScheduler();
 
-    while (1);
+    while (1)
+        ;
 }
 
 void led_task()
@@ -48,7 +49,7 @@ void led_task()
 
 void print_task()
 {
-    int number;
+    int  number;
     char c;
     while(1)
     {
@@ -73,7 +74,8 @@ void delay_task()
 
 void HardFault_Handler(void)
 {
-    while(1); 
+    while(1)
+        ;
 }
 
 

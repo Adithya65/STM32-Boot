@@ -3,8 +3,8 @@
 #include <sys/stat.h>
 #include "stm_uart.h"
 
-extern char _end;
-extern char _heap_end;
+extern char  _end;
+extern char  _heap_end;
 static char *heap_end = 0;
 
 int __io_putchar(int ch)
@@ -16,7 +16,7 @@ int __io_putchar(int ch)
 int _write(int file, char *ptr, int len)
 {
     (void)file;
-    for (int volatile i = 0; i < len; i++) 
+    for (int volatile i = 0; i < len; i++)
     {
         uart_write(ptr[i]);
     }
@@ -24,9 +24,9 @@ int _write(int file, char *ptr, int len)
 }
 
 int _close(int file)
-{ 
+{
     (void)file;
-    return -1; 
+    return -1;
 }
 
 int _fstat(int file, struct stat *st)
@@ -36,34 +36,34 @@ int _fstat(int file, struct stat *st)
     return 0;
 }
 
-int _isatty(int file) 
-{ 
+int _isatty(int file)
+{
     (void)file;
-    return 1; 
+    return 1;
 }
 
-int _lseek(int file, int ptr, int dir) 
-{ 
+int _lseek(int file, int ptr, int dir)
+{
     (void)file;
     (void)ptr;
     (void)dir;
-    return 0; 
+    return 0;
 }
 
 int _read(int file, char *ptr, int len)
 {
-    if (file == 0)  
+    if (file == 0)
     {
         for (int volatile i = 0; i < len; i++)
         {
-            int c = uart_read();  
+            int c = uart_read();
             if (c < 0)
-                return i;  
+                return i;
             ptr[i] = (char)c;
         }
         return len;
     }
-    return -1; 
+    return -1;
 }
 
 int _kill(int pid, int sig)
@@ -74,27 +74,28 @@ int _kill(int pid, int sig)
     return -1;
 }
 
-int _getpid(void) 
-{ 
-    return 1; 
+int _getpid(void)
+{
+    return 1;
 }
 
 void _exit(int status)
 {
     (void)status;
-    while (1); 
+    while (1)
+        ;
 }
 
 void* _sbrk(ptrdiff_t incr)
 {
-    char *prev_heap_end =NULL;
+    char *prev_heap_end = NULL;
     if (heap_end == 0)
     {
         heap_end = &_end;
     }
     prev_heap_end = heap_end;
 
-    if ((heap_end + incr) > &_heap_end) 
+    if ((heap_end + incr) > &_heap_end)
     {
         errno = ENOMEM;
         return (void *) -1;

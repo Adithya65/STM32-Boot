@@ -2,11 +2,11 @@
 #define __FREERTOS_TESTS__
 
 #define TEST_ASSERT(cond, msg)                            \
-    do {                                                  \
-        if (!(cond)) {                                    \
-            for (;;) ;                                    \
-        }                                                 \
-    } while (0)
+        do {                                                  \
+            if (!(cond)) {                                    \
+                for (;;);                                    \
+            }                                                 \
+        } while (0)
 
 #define TEST_LOG(msg)           printf("Test passed: %s\n", msg)
 

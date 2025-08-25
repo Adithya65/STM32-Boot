@@ -76,7 +76,7 @@ static void medium_task(void *params)
 static void high_task(void *params)
 {
     (void)params;
-    vTaskDelay(pdMS_TO_TICKS(500)); 
+    vTaskDelay(pdMS_TO_TICKS(500));
 
     printf("HighTask: Trying to take Mutex1\n");
     if (xSemaphoreTake(xMutex1, portMAX_DELAY) == pdTRUE)

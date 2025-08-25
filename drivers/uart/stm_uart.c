@@ -2,9 +2,9 @@
 #include "stm_uart_ll.h"
 
 /*TODO:
- * Add apis to set and modify configs[ Baudrate, Start-Stop bits ]
- * update read/write wrappers more functional
- */
+  * Add apis to set and modify configs[ Baudrate, Start-Stop bits ]
+  * update read/write wrappers more functional
+  */
 
 
 int uart_init()
@@ -13,7 +13,7 @@ int uart_init()
     set_uart_isr();
     set_gpio_alt_func();
     set_uart_configs();
-   
+
     return 0;
 }
 
