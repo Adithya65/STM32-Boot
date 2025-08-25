@@ -13,7 +13,7 @@
 #define QUEUE_LENGTH        5
 #define QUEUE_ITEM_SIZE     sizeof(int)
 
-static QueueHandle_t xQueue = NULL;
+static QueueHandle_t     xQueue             = NULL;
 static SemaphoreHandle_t xTestDoneSemaphore = NULL;
 
 static void producer_task(void *params);
@@ -48,9 +48,9 @@ int queue_tests()
 
 static void producer_task(void *params)
 {
-    int producer_id = (int)params;
+    int          producer_id = (int)params;
     int volatile i;
-    for (i = 0; i < 6; i++)  
+    for (i = 0; i < 6; i++)
     {
         int value = (producer_id * 100) + i;
 
@@ -108,5 +108,6 @@ static void logger_task(void *params)
         TEST_ASSERT(0, "Timeout waiting for test to finish");
     }
 
-    for (;;);
+    for (;;)
+        ;
 }

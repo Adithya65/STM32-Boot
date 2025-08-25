@@ -10,7 +10,7 @@
 #define PRIORITY_LOW     (configMAX_PRIORITIES - 3)
 
 
-static SemaphoreHandle_t xBinarySem = NULL;
+static SemaphoreHandle_t xBinarySem      = NULL;
 static SemaphoreHandle_t xRecursiveMutex = NULL;
 
 static void high_priority_task(void *params);

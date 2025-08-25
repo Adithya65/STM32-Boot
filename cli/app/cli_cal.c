@@ -5,11 +5,12 @@
 #include "FreeRTOS_CLI.h"
 
 /* Add Command */
-static BaseType_t prvAddCommand(char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString)
+static BaseType_t prvAddCommand(char *pcWriteBuffer, size_t xWriteBufferLen,
+                                const char *pcCommandString)
 {
     const char *pcParameter1, *pcParameter2;
-    BaseType_t xParameter1Length, xParameter2Length;
-    int num1, num2;
+    BaseType_t  xParameter1Length, xParameter2Length;
+    int         num1, num2;
 
     pcParameter1 = FreeRTOS_CLIGetParameter(pcCommandString, 1, &xParameter1Length);
     pcParameter2 = FreeRTOS_CLIGetParameter(pcCommandString, 2, &xParameter2Length);
@@ -28,11 +29,12 @@ static BaseType_t prvAddCommand(char *pcWriteBuffer, size_t xWriteBufferLen, con
 }
 
 /* Subtract Command */
-static BaseType_t prvSubCommand(char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString)
+static BaseType_t prvSubCommand(char *pcWriteBuffer, size_t xWriteBufferLen,
+                                const char *pcCommandString)
 {
     const char *pcParameter1, *pcParameter2;
-    BaseType_t xParameter1Length, xParameter2Length;
-    int num1, num2;
+    BaseType_t  xParameter1Length, xParameter2Length;
+    int         num1, num2;
 
     pcParameter1 = FreeRTOS_CLIGetParameter(pcCommandString, 1, &xParameter1Length);
     pcParameter2 = FreeRTOS_CLIGetParameter(pcCommandString, 2, &xParameter2Length);
@@ -50,10 +52,11 @@ static BaseType_t prvSubCommand(char *pcWriteBuffer, size_t xWriteBufferLen, con
     return pdFALSE;
 }
 
-static BaseType_t prvEchoCommand(char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString)
+static BaseType_t prvEchoCommand(char *pcWriteBuffer, size_t xWriteBufferLen,
+                                 const char *pcCommandString)
 {
     const char *pcParameter1;
-    BaseType_t xParameter1Length;
+    BaseType_t  xParameter1Length;
 
     pcParameter1 = FreeRTOS_CLIGetParameter(pcCommandString, 1, &xParameter1Length);
 
@@ -62,8 +65,8 @@ static BaseType_t prvEchoCommand(char *pcWriteBuffer, size_t xWriteBufferLen, co
         snprintf(pcWriteBuffer, xWriteBufferLen, "Error: Missing parameters\r\n");
         return pdFALSE;
     }
-    memcpy(pcWriteBuffer,pcParameter1,xWriteBufferLen);
-    strcat(pcWriteBuffer,"\r\n");
+    memcpy(pcWriteBuffer, pcParameter1, xWriteBufferLen);
+    strcat(pcWriteBuffer, "\r\n");
     return pdFALSE;
 }
 

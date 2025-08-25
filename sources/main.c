@@ -21,5 +21,6 @@ int main()
 #error "Invalid Source"
 #endif
 
-    while(1);
+    while(1)
+        ;
 }
