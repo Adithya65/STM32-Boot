@@ -1,24 +1,46 @@
-name: Code Style Check
+name: CI
 
 on:
-  pull_request:
   push:
-    branches: [ "main" ]
+  pull_request:
 
 jobs:
-  style:
+  build-and-style:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout repo (with submodules)
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-      - name: Install Uncrustify
-        run: sudo apt-get install -y uncrustify
-
-      - name: Run Uncrustify check
+      - name: Install tools
         run: |
-          files=$(find . -name '*.c' -o -name '*.h')
-          for f in $files; do
-            uncrustify -c tools/uncrustify.cfg --check $f || exit 1
-          done
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake uncrustify
 
+      - name: Configure & Build
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          make -j$(nproc)
+
+      - name: Run Uncrustify style check
+        run: |
+          # Find all C & header files, skip submodules and git dirs
+          files=$(find . \
+            -name '*.c' -o -name '*.h' \
+            -not -path "./freertos/*" \
+            -not -path "./third_party/*" \
+            -not -path "./.git/*")
+
+          echo "Checking style for:"
+          echo "$files"
+
+          for f in $files; do
+            uncrustify -c tools/uncrustify.cfg --check "$f" || {
+              echo "❌ Style check failed for $f"
+              exit 1
+            }
+          done
