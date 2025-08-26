@@ -12,6 +12,6 @@ void freertos_tests()
     number_tests();
 #else
 #error invalid selection
-#endif 
+#endif
 }
 

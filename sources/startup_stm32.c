@@ -22,7 +22,7 @@ typedef void (*isr_t)(void);
 void clear_bss()
 {
     unsigned int *bss_start = &_bss;
-    while(bss_start < & _ebss)
+    while(bss_start < &_ebss)
     {
         *bss_start = 0;
         bss_start++;
@@ -31,7 +31,7 @@ void clear_bss()
 
 void copy_data()
 {
-    unsigned int *src_addr = &_idata;
+    unsigned int *src_addr  = &_idata;
     unsigned int *dest_addr = &_data;
 
     while(dest_addr < &_edata)
@@ -40,14 +40,15 @@ void copy_data()
     }
 }
 
-void isr_reset(void) 
+void isr_reset(void)
 {
     clear_bss();
     copy_data();
     /*hardware inits*/
     uart_init();
     main();
-    while(1);
+    while(1)
+        ;
 }
 
 void isr_hardfault(void)
@@ -70,18 +71,19 @@ void hard_fault_handler_c(uint32_t *hardfault_args)
     volatile uint32_t stacked_r2  = hardfault_args[2];
     volatile uint32_t stacked_r3  = hardfault_args[3];
     volatile uint32_t stacked_r12 = hardfault_args[4];
-    volatile uint32_t stacked_lr  = hardfault_args[5]; 
-    volatile uint32_t stacked_pc  = hardfault_args[6]; 
+    volatile uint32_t stacked_lr  = hardfault_args[5];
+    volatile uint32_t stacked_pc  = hardfault_args[6];
     volatile uint32_t stacked_psr = hardfault_args[7];
 #else
     (void)hardfault_args;
 #endif
-    while (1);
+    while (1)
+        ;
 }
 
 
 extern unsigned long _estack;
-static const isr_t ivt[IVT_ARRAY_SIZE] __attribute__((used, section(".ivt"))) =
+static const isr_t   ivt[IVT_ARRAY_SIZE] __attribute__((used, section(".ivt"))) =
 {
     [0]  = (isr_t)&_estack,
     [1]  = isr_reset,
@@ -89,5 +91,5 @@ static const isr_t ivt[IVT_ARRAY_SIZE] __attribute__((used, section(".ivt"))) =
     [11] = vPortSVCHandler,
     [14] = xPortPendSVHandler,
     [15] = xPortSysTickHandler,
-    [54] = USART2_IRQHandler,   
+    [54] = USART2_IRQHandler,
 };

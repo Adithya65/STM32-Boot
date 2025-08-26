@@ -1,6 +1,6 @@
 # STM32G491RET6U Bare-Metal Bring-Up with FreeRTOS
 
-This project initializes the STM32G491RET6U microcontroller from reset, sets up a minimal runtime environment, and ports FreeRTOS with integrated UART driver support for printf(). It provides a simple command-line interface (CLI) for interaction, along with configurable build options to run FreeRTOS test cases or sample applications such as an LED blink demo and an I²C-based OLED display example. Core features supported include I²C communication, UART logging, and multitasking via FreeRTOS.
+This project initializes the STM32G491RET6U microcontroller from reset, sets up a minimal runtime environment, and ports FreeRTOS with integrated UART driver support for printf(). It provides a simple command-line interface for interaction, along with configurable build options to run FreeRTOS test cases or sample applications such as an LED blink demo and an I²C-based OLED display example. Core features supported include I²C communication, UART logging, and multitasking via FreeRTOS.
 
 ---
 

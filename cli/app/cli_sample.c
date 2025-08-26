@@ -18,20 +18,20 @@ void vCLITask(void *pvParameters)
 {
 
     BaseType_t xMoreDataToFollow;
-    int inputIndex = 0;
-    char c;
+    int        inputIndex = 0;
+    char       c;
 
     (void)pvParameters;
 
-    printf("\r\nSTM32#"); 
+    printf("\r\nSTM32#");
 
     for (;;)
     {
-        c = getchar(); 
+        c = getchar();
 
         if (c == '\r' || c == '\n')
         {
-            if(!(memcmp(cInputBuffer,cIsZeroBuffer,MAX_INPUT_SIZE)))
+            if(!(memcmp(cInputBuffer, cIsZeroBuffer, MAX_INPUT_SIZE)))
             {
                 printf("\r\nSTM32#");
                 continue;
@@ -39,9 +39,11 @@ void vCLITask(void *pvParameters)
             printf("\r\n");
             do
             {
-                xMoreDataToFollow = FreeRTOS_CLIProcessCommand(cInputBuffer, cOutputBuffer, MAX_OUTPUT_SIZE);
+                xMoreDataToFollow = FreeRTOS_CLIProcessCommand(cInputBuffer, cOutputBuffer,
+                                                               MAX_OUTPUT_SIZE);
                 printf("%s", cOutputBuffer);
-            } while (xMoreDataToFollow != pdFALSE);
+            }
+            while (xMoreDataToFollow != pdFALSE);
 
             memset(cInputBuffer, 0, MAX_INPUT_SIZE);
             inputIndex = 0;
@@ -50,7 +52,7 @@ void vCLITask(void *pvParameters)
         else if (isprint((int)c) && inputIndex < MAX_INPUT_SIZE - 1)
         {
             cInputBuffer[inputIndex++] = c;
-            putchar(c); 
+            putchar(c);
         }
         else if (c == '\b' && inputIndex > 0)
         {
@@ -69,6 +71,7 @@ int cli_task(void)
 
     vTaskStartScheduler();
 
-    while(1); 
+    while(1)
+        ;
 }
 
