@@ -19,10 +19,12 @@
 #define I2C_ISR_OFFSET                  0x18
 #define I2C_TXDR_OFFSET                 0x28
 #define I2C_ICR_OFFSET                  0x1C
+#define I2C_RXDR_OFFSET                 0x24
 
 
 void i2c_init(void);
 void i2c_stop();
 int32_t i2c_write_data(uint8_t addr, uint8_t* data, uint32_t len, uint8_t start, uint8_t reload);
+int32_t i2c_read_data(uint8_t addr, uint8_t* data, uint16_t len);
 
 #endif
