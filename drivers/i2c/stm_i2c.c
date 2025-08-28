@@ -13,8 +13,8 @@
 static void init_rcc();
 static void config_gpio();
 static void init_i2c();
-static int32_t i2c_write_byte(uint8_t addr, uint8_t* data, uint16_t len, uint8_t start,
-                              uint8_t reload);
+static int32_t i2c_write_helper(uint8_t addr, uint8_t* data, uint16_t len, uint8_t start,
+                                uint8_t reload);
 
 void i2c_init(void)
 {
@@ -22,24 +22,6 @@ void i2c_init(void)
     config_gpio();
     init_i2c();
 }
-
-void i2c_stop()
-{
-    uint32_t volatile reg_val, timeout;
-
-    reg_val  = REG_RD(I2C1_BASE_ADDR + I2C_CR2_OFFSET);
-    reg_val |= 1 << 14;
-    REG_WR(I2C1_BASE_ADDR + I2C_CR2_OFFSET, reg_val);
-
-    timeout = TIMEOUT;
-    while (!(REG_RD(I2C1_BASE_ADDR + I2C_ISR_OFFSET) & (1 << 5)))
-    {
-        if (--timeout == 0)
-            return;
-    }
-    REG_WR(I2C1_BASE_ADDR + I2C_ICR_OFFSET, (1 << 5));
-}
-
 
 int32_t i2c_write_data(uint8_t addr, uint8_t* data, uint32_t len, uint8_t start, uint8_t reload)
 {
@@ -49,7 +31,7 @@ int32_t i2c_write_data(uint8_t addr, uint8_t* data, uint32_t len, uint8_t start,
     while( sent < len )
     {
         uint16_t chunk = (((len - sent) < 255)?(len - sent):255);
-        ret = i2c_write_byte(addr, data + sent, chunk, start, reload);
+        ret = i2c_write_helper(addr, data + sent, chunk, start, reload);
         if(ret != 0)
             return -EINVAL;
         sent += chunk;
@@ -59,8 +41,8 @@ int32_t i2c_write_data(uint8_t addr, uint8_t* data, uint32_t len, uint8_t start,
 }
 
 
-static int32_t i2c_write_byte(uint8_t addr, uint8_t* data, uint16_t len, uint8_t start,
-                              uint8_t reload)
+static int32_t i2c_write_helper(uint8_t addr, uint8_t* data, uint16_t len, uint8_t start,
+                                uint8_t reload)
 {
     uint32_t volatile reg_val, timeout;
 
@@ -83,7 +65,7 @@ static int32_t i2c_write_byte(uint8_t addr, uint8_t* data, uint16_t len, uint8_t
         while (!(REG_RD(I2C1_BASE_ADDR + I2C_ISR_OFFSET) & (1 << 0)))
         {
             if (--timeout == 0)
-                return -EINVAL;
+                return -ETIMEDOUT;
         }
     }
 
@@ -94,7 +76,7 @@ static int32_t i2c_write_byte(uint8_t addr, uint8_t* data, uint16_t len, uint8_t
         while (!(REG_RD(I2C1_BASE_ADDR + I2C_ISR_OFFSET) & (1 << 6)))
         {
             if (--timeout == 0)
-                return -EINVAL;
+                return -ETIMEDOUT;
         }
     }
     else
@@ -102,11 +84,53 @@ static int32_t i2c_write_byte(uint8_t addr, uint8_t* data, uint16_t len, uint8_t
         while (!(REG_RD(I2C1_BASE_ADDR + I2C_ISR_OFFSET) & (1 << 7)))
         {
             if (--timeout == 0)
-                return -EINVAL;
+                return -ETIMEDOUT;
         }
     }
 
     return 0;
+}
+
+int32_t i2c_read_data(uint8_t addr, uint8_t* data, uint16_t len)
+{
+    uint32_t volatile reg_val, timeout;
+
+    reg_val  = (addr << 1) | (len << 16) | (1 << 10);
+    REG_WR(I2C1_BASE_ADDR + I2C_CR2_OFFSET, reg_val);
+    reg_val |= (1 << 13);
+    REG_WR(I2C1_BASE_ADDR + I2C_CR2_OFFSET, reg_val);
+
+
+    for (uint16_t volatile i = 0; i < len; i++)
+    {
+        timeout = 100000;
+        while (!(REG_RD(I2C1_BASE_ADDR + I2C_ISR_OFFSET) & (1 << 2)))
+        {
+            if (--timeout == 0)
+                return -ETIMEDOUT;
+        }
+        data[i] = (uint8_t)REG_RD(I2C1_BASE_ADDR + I2C_RXDR_OFFSET);
+    }
+
+
+    return 0;
+}
+
+void i2c_stop()
+{
+    uint32_t volatile reg_val, timeout;
+
+    reg_val  = REG_RD(I2C1_BASE_ADDR + I2C_CR2_OFFSET);
+    reg_val |= 1 << 14;
+    REG_WR(I2C1_BASE_ADDR + I2C_CR2_OFFSET, reg_val);
+
+    timeout = TIMEOUT;
+    while (!(REG_RD(I2C1_BASE_ADDR + I2C_ISR_OFFSET) & (1 << 5)))
+    {
+        if (--timeout == 0)
+            return;
+    }
+    REG_WR(I2C1_BASE_ADDR + I2C_ICR_OFFSET, (1 << 5));
 }
 
 static void init_rcc()

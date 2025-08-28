@@ -17,6 +17,7 @@ static void i2c_scan_task(void *pvParameters);
 static void i2c_oled_display();
 static int32_t oled_send_command(uint32_t cmd);
 static int32_t oled_send_data(uint8_t *data, uint16_t len);
+static void i2c_read_rtc(void *pvParameters);
 
 uint8_t        buff[256];
 
@@ -100,9 +101,16 @@ int32_t i2c_sample(void)
 
     xTaskCreate(i2c_oled_display,
                 "I2C_OLED",
-                512,
+                256,
                 NULL,
                 1,
+                NULL);
+
+    xTaskCreate(i2c_read_rtc,
+                "I2C_RTC",
+                256,
+                NULL,
+                2,
                 NULL);
 
     vTaskStartScheduler();
@@ -161,7 +169,7 @@ static void i2c_oled_display()
 
     if(oled_send_data(display_data, 1024))
     {
-        printf("\r ERRORR!!\n");
+        printf("\rNo Display Found!\n");
     }
 
     while(1)
@@ -233,3 +241,36 @@ static int32_t oled_send_data(uint8_t *data, uint16_t len)
     return ret;
 }
 #endif
+
+static inline uint8_t bcd2dec(uint8_t val)
+{
+    return ((val >> 4) * 10) + (val & 0x0F);
+}
+
+static void i2c_read_rtc(void *pvParameters)
+{
+    uint8_t buf[7];
+    uint8_t reg = 0x00;
+
+    (void)pvParameters;
+
+    while (1)
+    {
+        i2c_write_data(0x68, &reg, 1, 1, 0);
+
+        i2c_read_data(0x68, buf, 7);
+
+        uint8_t sec   = bcd2dec(buf[0] & 0x7F);
+        uint8_t min   = bcd2dec(buf[1]);
+        uint8_t hour  = bcd2dec(buf[2] & 0x3F);
+        uint8_t day   = bcd2dec(buf[3]);
+        uint8_t date  = bcd2dec(buf[4]);
+        uint8_t month = bcd2dec(buf[5] & 0x1F);
+        uint8_t year  = bcd2dec(buf[6]);
+
+        printf("\r %02d:%02d:%02d  %02d-%02d-20%02d (Day:%d)\n",
+               hour, min, sec, date, month, year, day);
+
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+}
