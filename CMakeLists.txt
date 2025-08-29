@@ -1,4 +1,34 @@
 cmake_minimum_required(VERSION 3.15)
+
+option(BUILD_CLI "Build CLI mode" OFF)
+option(BUILD_SAMPLES "Build Samples mode" OFF)
+option(BUILD_TESTS "Build Tests mode" OFF)
+
+if(BUILD_CLI)
+    add_compile_definitions(APP_MODE=CLI)
+elseif(BUILD_SAMPLES)
+    add_compile_definitions(APP_MODE=SAMPLES)
+elseif(BUILD_TESTS)
+    add_compile_definitions(APP_MODE=TESTS)
+endif()
+
+
+add_custom_target(cli
+    COMMAND ${CMAKE_COMMAND} -DBUILD_CLI=ON -S ${CMAKE_SOURCE_DIR} -B ${CMAKE_BINARY_DIR}
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}
+)
+
+add_custom_target(samples
+    COMMAND ${CMAKE_COMMAND} -DBUILD_SAMPLES=ON -S ${CMAKE_SOURCE_DIR} -B ${CMAKE_BINARY_DIR}
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}
+)
+
+add_custom_target(tests
+    COMMAND ${CMAKE_COMMAND} -DBUILD_TESTS=ON -S ${CMAKE_SOURCE_DIR} -B ${CMAKE_BINARY_DIR}
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}
+)
+
+
 set(FREERTOS_KERNEL_DIR ${CMAKE_SOURCE_DIR}/freertos/FreeRTOS-Kernel)
 set(FREERTOS_PORT_DIR ${CMAKE_SOURCE_DIR}/freertos/)
 set(FREERTOS_SRC
@@ -28,7 +58,6 @@ set(I2C_DRIVER
     ${CMAKE_SOURCE_DIR}/drivers/i2c/stm_i2c.c
 )
 
-
 project(blinky C)
 set(CPU_FLAGS "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard")
 
@@ -43,8 +72,8 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/sources/console.c
     ${CMAKE_SOURCE_DIR}/sources/main.c
     ${CMAKE_SOURCE_DIR}/cli/base/FreeRTOS_CLI.c
-    ${CMAKE_SOURCE_DIR}/cli/app/cli_sample.c
-    ${CMAKE_SOURCE_DIR}/cli/app/cli_cal.c
+    ${CMAKE_SOURCE_DIR}/cli/app/cli_app.c
+    ${CMAKE_SOURCE_DIR}/cli/app/cli_helper.c
     ${CMAKE_SOURCE_DIR}/samples/i2c_sample.c
     ${UART_DRIVER}
     ${I2C_DRIVER}
