@@ -3,8 +3,8 @@
 #include <stdint.h>
 
 #define RUN_FREERTOS_TESTS   0
-#define RUN_STM_SAMPLE       1
-#define RUN_CLI_TASK         0
+#define RUN_STM_SAMPLE       0
+#define RUN_CLI_TASK         1
 
 void cli_task();
 void stm_samples();
