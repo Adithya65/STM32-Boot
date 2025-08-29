@@ -14,7 +14,6 @@
 # CMake cache and temporary files
 CMakeCache.txt
 CMakeFiles/
-Makefile
 cmake_install.cmake
 # Temporary files created by editors
 *~
