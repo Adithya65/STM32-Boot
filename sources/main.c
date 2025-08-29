@@ -2,21 +2,22 @@
 #include "freertos_tests.h"
 #include <stdint.h>
 
-#define RUN_FREERTOS_TESTS   0
-#define RUN_STM_SAMPLE       0
-#define RUN_CLI_TASK         1
+
+#define CLI          1
+#define SAMPLES      2
+#define TESTS        3
 
 void cli_task();
 void stm_samples();
 
 int main()
 {
-#if RUN_STM_SAMPLE
-    stm_samples();
-#elif RUN_FREERTOS_TESTS
-    (void)freertos_tests();
-#elif RUN_CLI_TASK
+#if APP_MODE == CLI
     cli_task();
+#elif APP_MODE == SAMPLES
+    stm_samples();
+#elif APP_MODE == TESTS
+    (void)freertos_tests();
 #else
 #error "Invalid Source"
 #endif

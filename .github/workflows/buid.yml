@@ -34,7 +34,7 @@ jobs:
       - name: Build firmware
         run: |
           cd build
-          make -j$(nproc)
+          make cli -j$(nproc)
 
       # 5. Check ELF file size (helpful sanity check)
       - name: Firmware size
