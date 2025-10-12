@@ -99,19 +99,19 @@ int32_t i2c_sample(void)
                 1,
                 NULL);
 
-    xTaskCreate(i2c_oled_display,
-                "I2C_OLED",
-                256,
-                NULL,
-                1,
-                NULL);
+     xTaskCreate(i2c_oled_display,
+                 "I2C_OLED",
+                 256,
+                 NULL,
+                 1,
+                 NULL);
 
-    xTaskCreate(i2c_read_rtc,
-                "I2C_RTC",
-                256,
-                NULL,
-                2,
-                NULL);
+     xTaskCreate(i2c_read_rtc,
+                 "I2C_RTC",
+                 256,
+                 NULL,
+                 2,
+                 NULL);
 
     vTaskStartScheduler();
 

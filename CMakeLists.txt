@@ -57,6 +57,9 @@ set(UART_DRIVER
 set(I2C_DRIVER
     ${CMAKE_SOURCE_DIR}/drivers/i2c/stm_i2c.c
 )
+set(FLASH_DRIVER
+    ${CMAKE_SOURCE_DIR}/drivers/flash/stm_flash.c
+)
 
 project(blinky C)
 set(CPU_FLAGS "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard")
@@ -75,7 +78,9 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/cli/app/cli_app.c
     ${CMAKE_SOURCE_DIR}/cli/app/cli_helper.c
     ${CMAKE_SOURCE_DIR}/samples/i2c_sample.c
+    ${CMAKE_SOURCE_DIR}/samples/flash_sample.c
     ${UART_DRIVER}
+    ${FLASH_DRIVER}
     ${I2C_DRIVER}
     ${FREERTOS_SRC}
     ${FREERTOS_TESTS}
@@ -87,6 +92,7 @@ target_include_directories(RTOS.elf PRIVATE
     ${CMAKE_SOURCE_DIR}/includes  
     ${CMAKE_SOURCE_DIR}/drivers/uart  
     ${CMAKE_SOURCE_DIR}/drivers/i2c 
+    ${CMAKE_SOURCE_DIR}/drivers/flash
     ${CMAKE_SOURCE_DIR}/tests/freertos 
     ${CMAKE_SOURCE_DIR}/cli/base/ 
     ${CMAKE_SOURCE_DIR}/cli/app/ 
